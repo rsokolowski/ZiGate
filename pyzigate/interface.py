@@ -550,6 +550,13 @@ class ZiGate(commands_helpers.Mixin, attributes_helpers.Mixin):
             for i, value in enumerate(msg['delay_list']):
                 ZGT_LOG.debug('    - %s : %s' % (i, value))
 
+            if msg['cluster'] == b'0500':
+                device_addr = msg['src_address']
+                endpoint = msg['endpoint']
+                alarm1 = zone_status_values[0][int(zone_status_binary[-1])]
+                ZGT_LOG.debug('Detected change in water sensor. New value: {}'.format(alarm1))
+                self.set_device_property(device_addr, endpoint, ZGT_STATE, alarm1)
+
         # Route Discovery Confirmation
         elif msg_type == b'8701':
             ZGT_LOG.debug('RESPONSE 8701: Route Discovery Confirmation')
